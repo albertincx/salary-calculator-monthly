@@ -1,24 +1,82 @@
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
 import "./globals.css";
 import Warnings from "./components/warnings";
-import { assistantId } from "./assistant-config";
-const inter = Inter({ subsets: ["latin"] });
+import {assistantId} from "./assistant-config";
+
+const inter = Inter({subsets: ["latin"]});
 
 export const metadata = {
-  title: "Assistants API Quickstart",
-  description: "A quickstart template using the Assistants API with OpenAI",
-  icons: {
-    icon: "/openai.svg",
-  },
+// @ts-ignore
+    'og:title': "salary calculator, зарплата калькулятор, рубль доллар",
+    'og:description': "Online tool for salary calculation",
+    title: "salary calculator, зарплата калькулятор, рубль доллар",
+    description: "Calculate your salary in dollars and rubles",
+    keywords: "salary calculator, зарплата калькулятор, рубль доллар",
+    icons: {
+        icon: "/openai.svg",
+    },
+
 };
 
-export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        {assistantId ? children : <Warnings />}
-        <img className="logo" src="/openai.svg" alt="OpenAI Logo" />
-      </body>
-    </html>
-  );
+//        <meta name="description" content="Calculate your salary in dollars and rubles" />
+//         <meta name="keywords" content="salary calculator, зарплата калькулятор, рубль доллар" />
+//         <meta property="og:title" content={t.title} />
+//         <meta property="og:description" content="Online tool for salary calculation" />
+// import { useState, useEffect } from 'react';
+import Head from 'next/head';
+import SalaryCalculator from "@/app/page";
+// export default SalaryCalculator;
+
+export default function RootLayout({children}) {
+
+    // Автоматическое обновление курса (заглушка)
+    let language = 'ru'
+    const translations = {
+        ru: {
+            title: 'Калькулятор зарплаты',
+            hourlyRate: 'Почасовая ставка ($)',
+            hoursPerWeek: 'Часов в неделю',
+            exchangeRate: 'Курс USD к RUB',
+            calculate: 'Рассчитать',
+            weeklySalary: 'Зарплата в неделю',
+            monthlySalary: 'Зарплата в месяц',
+            inRubles: 'В рублях',
+            language: 'Язык',
+            currency: 'Валюта'
+        },
+        en: {
+            title: 'Salary Calculator',
+            hourlyRate: 'Hourly rate ($)',
+            hoursPerWeek: 'Hours per week',
+            exchangeRate: 'USD to RUB rate',
+            calculate: 'Calculate',
+            weeklySalary: 'Weekly salary',
+            monthlySalary: 'Monthly salary',
+            inRubles: 'In rubles',
+            language: 'Language',
+            currency: 'Currency'
+        }
+    };
+
+    const t = translations[language];
+
+    return (
+        <html lang="en">
+        <body className={inter.className}>
+        {/*{assistantId ? children : <Warnings />}*/}
+        <Head>
+            <title>{t.title}</title>
+
+        </Head>
+
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-md_ m-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl_">
+                <div className="p-8">
+                    <SalaryCalculator/>
+                </div>
+            </div>
+        </div>
+        </body>
+        </html>
+    );
 }
