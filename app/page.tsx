@@ -9,6 +9,7 @@ const SalaryCalculator = () => {
     const [exchangeRate, setExchangeRate] = useState(87.5);
     const [language, setLanguage] = useState('ru');
     const [currency, setCurrency] = useState('USD');
+    const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
     // Автоматическое обновление курса (заглушка)
     useEffect(() => {
@@ -19,6 +20,14 @@ const SalaryCalculator = () => {
         };
         fetchExchangeRate();
     }, []);
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [theme]);
 
     const calculateSalary = () => {
         const weeklySalary = hourlyRate * hoursPerWeek;
@@ -71,24 +80,65 @@ const SalaryCalculator = () => {
                 <meta property="og:description" content="Online tool for salary calculation" />
             </Head>
 
-            <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+                <div className="max-w-md mx-auto bg-white_ dark:bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl">
                     <div className="p-8">
-                        <div className="flex justify-between items-center mb-6">
-                            <h1 className="text-2xl font-bold text-gray-800">{t.title}</h1>
-                            <select
-                                value={language}
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className="px-3 py-1 border rounded"
-                            >
-                                <option value="ru">Русский</option>
-                                <option value="en">English</option>
-                            </select>
+                        {/* Toggle Group */}
+                        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-2">
+                            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t.title}</h1>
+                            <div className="flex gap-2">
+                                {/* Language Toggle */}
+                                <div className="flex border rounded overflow-hidden dark:border-gray-600">
+                                    <button
+                                        className={`px-3 py-1 focus:outline-none transition-colors ${language === 'ru' ? 'bg-blue-500 text-white dark:bg-blue-400 dark:text-gray-900' : 'bg-transparent text-gray-800 dark:text-gray-100'}`}
+                                        onClick={() => setLanguage('ru')}
+                                        type="button"
+                                    >
+                                        Русский
+                                    </button>
+                                    <button
+                                        className={`px-3 py-1 focus:outline-none transition-colors ${language === 'en' ? 'bg-blue-500 text-white dark:bg-blue-400 dark:text-gray-900' : 'bg-transparent text-gray-800 dark:text-gray-100'}`}
+                                        onClick={() => setLanguage('en')}
+                                        type="button"
+                                    >
+                                        English
+                                    </button>
+                                </div>
+                                {/* Currency Toggle */}
+                                <div className="flex border rounded overflow-hidden dark:border-gray-600">
+                                    <button
+                                        className={`px-3 py-1 focus:outline-none transition-colors ${currency === 'USD' ? 'bg-green-500 text-white dark:bg-green-400 dark:text-gray-900' : 'bg-transparent text-gray-800 dark:text-gray-100'}`}
+                                        onClick={() => setCurrency('USD')}
+                                        type="button"
+                                    >
+                                        USD
+                                    </button>
+                                    <button
+                                        className={`px-3 py-1 focus:outline-none transition-colors ${currency === 'EUR' ? 'bg-green-500 text-white dark:bg-green-400 dark:text-gray-900' : 'bg-transparent text-gray-800 dark:text-gray-100'}`}
+                                        onClick={() => setCurrency('EUR')}
+                                        type="button"
+                                    >
+                                        EUR
+                                    </button>
+                                </div>
+                                {/* Theme Toggle */}
+                                <button
+                                    onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                                    className="px-3 py-1 border rounded dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 flex items-center gap-1"
+                                    title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+                                >
+                                    {theme === 'light' ? (
+                                        <span role="img" aria-label="sun">🌞</span>
+                                    ) : (
+                                        <span role="img" aria-label="moon">🌙</span>
+                                    )}
+                                </button>
+                            </div>
                         </div>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700_ dark:text-gray-300 mb-1">
                                     {t.hourlyRate}
                                 </label>
                                 <input
@@ -100,7 +150,7 @@ const SalaryCalculator = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700_ dark:text-gray-300 mb-1">
                                     {t.hoursPerWeek}
                                 </label>
                                 <input
@@ -112,7 +162,7 @@ const SalaryCalculator = () => {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                <label className="block text-sm font-medium text-gray-700_ dark:text-gray-300 mb-1">
                                     {t.exchangeRate}
                                 </label>
                                 <input
@@ -137,17 +187,6 @@ const SalaryCalculator = () => {
                                     {t.inRubles}: <span className="font-semibold">{calculateSalary().rub} RUB</span>
                                 </p>
                             </div>
-                        </div>
-
-                        <div className="mt-6 flex space-x-4">
-                            <select
-                                value={currency}
-                                onChange={(e) => setCurrency(e.target.value)}
-                                className="px-3 py-1 border rounded"
-                            >
-                                <option value="USD">USD</option>
-                                <option value="EUR">EUR</option>
-                            </select>
                         </div>
                     </div>
                 </div>
